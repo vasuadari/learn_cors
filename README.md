@@ -23,6 +23,7 @@
     - [Third-party cookies](#user-content-third-party-cookies)
     - [Additional HTTP Response Headers](#user-content-additional-http-response-headers)
         - [Access-Control-Expose-Headers](#user-content-access-control-expose-headers)
+4. [References](#user-content-references)
 
 ## Introduction
 
@@ -67,3 +68,7 @@
 ### Additional HTTP Response Headers
 
 #### Access-Control-Expose-Headers
+
+## References
+
+- [Cross-Origin Resource Sharing (CORS) by Mozilla](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
