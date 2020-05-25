@@ -4,12 +4,12 @@
 1. [Introduction](#user-content-introduction)
 2. [Basics](#user-content-basics)
     - [Simple Requests](#user-content-simple-requests)
-    - [Preflight requests](#user-content-preflight-requests)
-        - [Request headers](#user-content-request-headers)
+    - [Preflight Requests](#user-content-preflight-requests)
+        - [Request Headers](#user-content-request-headers)
             - [Origin](#user-content-origin)
             - [Access-Control-Request-Method](#user-content-allow-control-request-method)
             - [Access-Control-Request-Headers](#user-content-allow-control-request-headers)
-        - [Response headers](#user-content-response-headers)
+        - [Response Headers](#user-content-response-headers)
             - [Access-Control-Allow-Origin](#user-content-access-control-allow-origin)
             - [Access-Control-Allow-Methods](#user-content-access-control-allow-methods)
             - [Access-Control-Allow-Headers](#user-content-ontrol-allow-headers)
@@ -23,3 +23,47 @@
     - [Third-party cookies](#user-content-third-party-cookies)
     - [Additional HTTP Response Headers](#user-content-additional-http-response-headers)
         - [Access-Control-Expose-Headers](#user-content-access-control-expose-headers)
+
+## Introduction
+
+## Basics
+
+### Simple Requests
+
+### Preflight Requests
+
+#### Request Headers
+
+##### Origin
+
+##### Access-Control-Request-Method
+
+##### Access-Control-Request-Headers
+
+#### Response Headers
+
+##### Access-Control-Allow-Origin
+
+##### Access-Control-Allow-Methods
+
+##### Access-Control-Allow-Headers
+
+##### Access-Control-Max-Age
+
+##### Vary
+
+### Request with credentials
+
+## Advanced Topics
+
+### Preflighted requests and redirects
+
+#### Access-Control-Allow-Credentials
+
+### Credentialed requests and wildcards
+
+### Third-party cookies
+
+### Additional HTTP Response Headers
+
+#### Access-Control-Expose-Headers
