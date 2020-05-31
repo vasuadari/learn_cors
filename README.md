@@ -1,38 +1,39 @@
 # Cross-Origin Resource Sharing (CORS)
 
 ## Contents
-1. [Pre-Requisites](#user-content-pre-requisites)
-2. [Why do we need CORS?](#user-content-why-do-we-need-cors?)
-3. [Introduction](#user-content-introduction)
-4. [Basics](#user-content-basics)
-    - [Request Headers](#user-content-request-headers)
-      - [Origin](#user-content-origin)
-      - [Access-Control-Request-Method](#user-content-allow-control-request-method)
-      - [Access-Control-Request-Headers](#user-content-allow-control-request-headers)
-      - [CORS-safelisted](#user-content-cors-safelisted)
+1. [Pre-Requisites](#1-pre-requisites)
+2. [Why do we need CORS?](#2-why-do-we-need-cors?)
+3. [Introduction](#3-introduction)
+4. [Basics](#4-basics)
+    - [Request Headers](#-request-headers)
+      - [Origin](#origin)
+      - [Access-Control-Request-Method](#allow-control-request-method)
+      - [Access-Control-Request-Headers](#allow-control-request-headers)
+      - [CORS-safelisted](#cors-safelisted)
     - [Response Headers](#user-content-response-headers)
-      - [Access-Control-Allow-Origin](#user-content-access-control-allow-origin)
-      - [Access-Control-Allow-Methods](#user-content-access-control-allow-methods)
-      - [Access-Control-Allow-Headers](#user-content-ontrol-allow-headers)
-      - [Access-Control-Max-Age](#user-content-access-control-max-age)
-      - [Vary](#user-content-vary)
-    - [Simple Requests](#user-content-simple-requests)
-    - [Preflight Requests](#user-content-preflight-requests)
-    - [Request with credentials](#user-content-request-with-credentials)
-5. [Advanced Topics](#user-content-advanced-topics)
-    - [Additional HTTP Response Headers](#user-content-additional-http-response-headers)
-        - [Access-Control-Expose-Headers](#user-content-access-control-expose-headers)
-        - [Access-Control-Allow-Credentials](#user-content-access-control-allow-credentials)
-    - [Credentialed requests and wildcards](#user-content-credentialed-requests-and-wildcards)
-    - [Preflighted requests and redirects](#user-content-preflighted-requests-and-redirects)
-    - [Third-party cookies](#user-content-third-party-cookies)
-6. [References](#user-content-references)
+      - [Access-Control-Allow-Origin](#access-control-allow-origin)
+      - [Access-Control-Allow-Methods](#access-control-allow-methods)
+      - [Access-Control-Allow-Headers](#access-control-allow-headers)
+      - [Access-Control-Max-Age](#access-control-max-age)
+      - [Vary](#vary)
+    - [Simple Requests](#simple-requests)
+    - [Preflight Requests](#preflight-requests)
+    - [Request with credentials](#request-with-credentials)
+5. [Advanced Topics](#5-advanced-topics)
+    - [Additional HTTP Response Headers](#additional-http-response-headers)
+        - [Access-Control-Expose-Headers](#access-control-expose-headers)
+        - [Access-Control-Allow-Credentials](#access-control-allow-credentials)
+    - [Credentialed requests and wildcards](#credentialed-requests-and-wildcards)
+    - [Preflighted requests and redirects](#preflighted-requests-and-redirects)
+    - [Third-party cookies](#third-party-cookies)
+6. [TODO](#6-todo)
+7. [References](#7-references)
 
-## Pre-Requisites
+## 1. Pre-Requisites
 
 Know difference between [Simple HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview) and [XHR](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) request.
 
-## Why do we need CORS?
+## 2. Why do we need CORS?
 
 Origin Web App - https://github.com
 
@@ -46,13 +47,13 @@ content from one website(it could be a financial website) to any remote server.
 
 Luckily, CORS tackles this problem very well with a given set of rules.
 
-## Introduction
+## 3. Introduction
 
 Its a standard defined by [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) to enable cross-origin requests between client(browser) and the server to share
 resources at the same time maintaining security. Any browser will comply with these standards to prevent
 loading resources from any third-party servers.
 
-## Basics
+## 4. Basics
 
 ### Request Headers
 
@@ -77,7 +78,7 @@ Origin: http://localhost:1443
 
 #### Access-Control-Request-Method
 
-This header is used by browser when issuing a [pre-flight](#user-content-preflight-requests) requests to indicate which
+This header is used by browser when issuing a [pre-flight](#preflight-requests) requests to indicate which
 request method will be used when the actual request is made.
 
 **Syntax:**
@@ -96,7 +97,7 @@ Access-Control-Request-Method: POST
 
 #### Access-Control-Request-Headers
 
-This header is again used in the [pre-flight](#user-content-preflight-requests) requests by browser to indicate which
+This header is again used in the [pre-flight](#preflight-requests) requests by browser to indicate which
 request headers are to be used when the actual request is made. To use multiple headers,
 it has to be separated with comma.
 
@@ -113,7 +114,7 @@ Access-Control-Request-Headers: <header-name>, <header-name>
 Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 ```
 
-**Important:** All the header should be [CORS-safelisted](#user-content-cors-safelisted) or a customer header like `X-Custom-Header`.
+**Important:** All the header should be [CORS-safelisted](#cors-safelisted) or a customer header like `X-Custom-Header`.
 
 #### CORS-safelisted
 
@@ -134,7 +135,7 @@ The following headers are return in the [pre-flight](#user-content-pre-flight-re
 
 #### Access-Control-Allow-Origin
 
-This header indicates that if the requested [Origin](#user-content-origin) is allowed. Your browser will
+This header indicates that if the requested [Origin](#origin) is allowed. Your browser will
 choose to succeed/fail the request by matching the requested origin with this.
 
 **Syntax:**
@@ -143,8 +144,8 @@ choose to succeed/fail the request by matching the requested origin with this.
 Access-Control-Allow-Origin: *
 ```
 
-For requests without [credentails](#user-content-request-with-credentials), the value `*` can be specified as a wildcard.
-This tells your browser to allow requests from any [Origin](#user-content-origin).
+For requests without [credentails](#request-with-credentials), the value `*` can be specified as a wildcard.
+This tells your browser to allow requests from any [Origin](#origin).
 
 ```
 Access-Control-Allow-Origin: <origin>
@@ -152,7 +153,7 @@ Access-Control-Allow-Origin: <origin>
 
 When you receive only one origin in the response header, it means your server/web-app
 based on the requested `Origin` it responds with same `Origin` if its allowed.
-Your server should also respond with [Vary](#user-content-vary) to indicate that
+Your server should also respond with [Vary](#vary) to indicate that
 it varies based on a request header.
 
 **Example:**
@@ -289,7 +290,7 @@ These we call it as *simple requests*. It should meet the following conditions:
   - DELETE
 
 - Other than headers which are automatically by the user agent (for example, `Connection` or
-`User-Agent`), the only headers which are allowed to manually set are [CORS-safelisted](#user-content-cors-safelisted)
+`User-Agent`), the only headers which are allowed to manually set are [CORS-safelisted](#cors-safelisted)
 request headers and the following:
 
   - `DPR`
@@ -435,9 +436,9 @@ When your browser notices `Access-Control-Allow-Credentials` set to true. It wil
 respect `Set-Cookie` header and sets the cookie.
 
 **Important:** "\*" wildcard should not be set in the `Access-Control-Allow-Origin` like
-mentioned in the [Credentialed requests and wildcards](#user-content-credentialed-requests-and-wildcards) section.
+mentioned in the [Credentialed requests and wildcards](#credentialed-requests-and-wildcards) section.
 
-## Advanced Topics
+## 5. Advanced Topics
 
 ### Additional HTTP Response Headers
 
@@ -462,7 +463,7 @@ browser won't pass `Cookie` in request header as well as read `Set-Cookie` respo
 Access-Control-Allow-Credentials: true
 ```
 
-You can find example in the [Request with credentails](#user-content-request-with-credentials) section.
+You can find example in the [Request with credentails](#request-with-credentials) section.
 
 ### Credentialed requests and wildcards
 
@@ -485,10 +486,10 @@ currently. You might get errors like,
 Browser has to settings to reject all `third-party` cookies, when a user enables that. For example, if a request is
 made from `https://foo.com` and server is at `https://bar.com`, your browser will not set cookies set by bar.com.
 
-### TODO
+## 6. TODO
 
 - Add Screencasts
 
-## References
+## 7. References
 
 - [Cross-Origin Resource Sharing (CORS) by Mozilla](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
