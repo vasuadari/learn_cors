@@ -1,4 +1,4 @@
-# Cross-Origin Request Sharing (CORS)
+# Cross-Origin Resource Sharing (CORS)
 
 ## Contents
 1. [Pre-Requisites](#user-content-pre-requisites)
