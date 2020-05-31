@@ -39,9 +39,9 @@ Origin Web App - https://github.com
 When you open a website by typing Origin Web App, your browser makes Simple HTTP requests. CORS is not applicable here.
 As we are voluntarily requesting to serve content from Origin Web App. Your browser will/should serve it without any
 trouble. But, when it comes to XHR requests, JavaScript which is loaded by Origin Web App in your browser can make a
-request to any server(https://any.server) requesting for a resource. Now, Origin Web App is owned by Github
-but https://any.server is owned by a company named Foo(for an argument), that server could pontentially serve anything.
-Github cannot take control of a server which is owned by Foo. This has lot of security implications pontentially stealing a
+request to any server(https://netflix.com) requesting for a resource. Now, Origin Web App is owned by Github
+but https://netflix.com is owned by a company named Netflix, that server could pontentially serve anything.
+Github cannot take control of a server which is owned by Netflix. This has lot of security implications pontentially stealing a
 content from one website(it could be a financial website) to any remote server.
 
 Luckily, CORS tackles this problem very well with a given set of rules.
@@ -70,8 +70,8 @@ Origin: <scheme> "://" <hostname> [":" <port> ]
 **Examples:**
 
 ```
-Origin: https://any.server
-Origin: http://any.server:443
+Origin: https://netflix.com
+Origin: http://netflix.com:443
 Origin: http://localhost:1443
 ```
 
@@ -236,7 +236,7 @@ Vary: <header-name>
 
 **Example:**
 
-Lets say github.com allows both https://github.com as well as https://any.server to request for resources.
+Lets say github.com allows both https://github.com as well as https://netflix.com to request for resources.
 Consider following scenarios,
 
 **Scenario 1:**
@@ -265,21 +265,21 @@ Now in this scenario, browser will cache this pre-flight request results for
 curl -X OPTIONS https://github.com/api/v1/gists/1
 
 ```
-Origin: https://any.server
+Origin: https://netflix.com
 Access-Control-Request-Method: GET
 Access-Control-Request-Headers: Content-Type
 ```
 
 ```
-Access-Control-Allow-Origin: https://any.server
+Access-Control-Allow-Origin: https://netflix.com
 Vary: Origin
 Access-Control-Allow-Methods: GET, POST
 Access-Control-Allow-Headers: Content-Type
 Access-Control-Max-Age: 300
 ```
 
-Now you could notice that `Access-Control-Allow-Origin` contains https://any.server,
-this is example of how the response varies based on given `Origin. So does the
+Now you could notice that `Access-Control-Allow-Origin` contains https://netflix.com,
+this is example of how the response varies based on given `Origin`. So does the
 max-age of this response which is cached for only 5 minutes unlike first scenario.
 
 ### Simple Requests
