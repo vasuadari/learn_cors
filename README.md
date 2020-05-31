@@ -20,12 +20,12 @@
     - [Preflight Requests](#user-content-preflight-requests)
     - [Request with credentials](#user-content-request-with-credentials)
 5. [Advanced Topics](#user-content-advanced-topics)
-    - [Preflighted requests and redirects](#user-content-preflighted-requests-and-redirects)
-        - [Access-Control-Allow-Credentials](#user-content-access-control-allow-credentials)
-    - [Credentialed requests and wildcards](#user-content-credentialed-requests-and-wildcards)
-    - [Third-party cookies](#user-content-third-party-cookies)
     - [Additional HTTP Response Headers](#user-content-additional-http-response-headers)
         - [Access-Control-Expose-Headers](#user-content-access-control-expose-headers)
+        - [Access-Control-Allow-Credentials](#user-content-access-control-allow-credentials)
+    - [Credentialed requests and wildcards](#user-content-credentialed-requests-and-wildcards)
+    - [Preflighted requests and redirects](#user-content-preflighted-requests-and-redirects)
+    - [Third-party cookies](#user-content-third-party-cookies)
 6. [References](#user-content-references)
 
 ## Pre-Requisites
@@ -127,10 +127,6 @@ Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 
   Allowed values are `application/x-www-form-urlencoded`, `multipart/form-data` and
   `text/plain`.
-
-- `Connection`
-
-- `User-Agent`
 
 ### Response Headers
 
@@ -284,23 +280,214 @@ max-age of this response which is cached for only 5 minutes unlike first scenari
 
 ### Simple Requests
 
+Some request don't trigger [pre-flight](#user-content-pre-flight-requests) request for CORS.
+These we call it as *simple requests*. It should meet the following conditions:
+
+- One of the allowed methods:
+  - GET
+  - POST
+  - DELETE
+
+- Other than headers which are automatically by the user agent (for example, `Connection` or
+`User-Agent`), the only headers which are allowed to manually set are [CORS-safelisted](#user-content-cors-safelisted)
+request headers and the following:
+
+  - `DPR`
+  - `Downlink`
+  - `Save-Data`
+  - `Viewport-Width`
+  - `Width`
+
+- No event listeners are registered on any `XMLHttpRequestUpload` object used in the
+request.
+
+- No `ReadableStream` object is used in the request.
+
+**Example:**
+
+*Request:*
+```
+GET /api/v1/public-data/ HTTP/1.1
+Host: bar.com
+User-Agent: curl/7.69.1
+Accept: */*
+Origin: https://foo.com
+```
+
+*Response Headers:*
+```
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: Keep-Alive
+Transfer-Encoding: chunked
+Content-Type: application/xml
+```
+
+When a request returns `*` in `Access-Control-Allow-Origin` header. It means a request
+can be made from any `Host`. In this case, your browser won't make pre-flight request.
+
 ### Preflight Requests
+
+Your browser will make pre-flight request to determine if the actual request is safe
+to send.
+
+**Example:**
+
+```JavaScript
+const xhr = new XMLHttpRequest();
+xhr.open('POST', 'https://bar.com/api/v1/post-here/');
+xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
+xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+xhr.onreadystatechange = handler;
+xhr.send(JSON.stringify({ "email": "foo@bar.com" }));
+```
+
+*Pre-flight Request:*
+
+```
+OPTIONS /api/v1/post-here/
+Host: bar.com
+User-Agent: curl/7.69.1
+Accept: */*
+Origin: https://foo.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: X-PINGOTHER, Content-Type
+
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Content-Type: application/json
+Access-Control-Allow-Origin: https://foo.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: X-PINGOTHER, Content-Type, Accept
+```
+
+*Actual Request:*
+
+```
+POST -d '{foo: bar}' /api/v1/post-here/
+Host: bar.com
+User-Agent: curl/7.69.1
+Accept: */*
+Origin: https://foo.com
+X-PINGOTHER: pingpong
+Content-Type: application/json;charset=UTF-8
+
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Content-Type: application/json
+Access-Control-Allow-Origin: https://foo.com
+```
+
+When a non-standard header like `X-PINGOTHER` is set, your browser won't know if its
+safe to make the request. In order to make sure its safe, your browser makes OPTIONS
+request with `Access-Control-Request-Headers` containing `X-PINGOTHER` and `Content-Type`. Upon validating with [response headers](#user-content-response-headers) of pre-flight
+request, your browser makes actual request.
 
 ### Request with credentials
 
+In general, when you make a XHR request, cookies are not passed along with request.
+When there is need to pass cookies, you'll have to set a flag on the `XMLHttpRequest`
+object.
+
+```JavaScript
+const xhr = new XMLHttpRequest();
+const url = 'http://bar.com/api/v1/credentialed-content/';
+
+function callOtherDomain() {
+  if (invocation) {
+    xhr.open('GET', url, true);
+    xhr.withCredentials = true;
+    xhr.onreadystatechange = handler;
+    xhr.send();
+  }
+}
+```
+
+*Request:*
+
+```
+POST -d '{foo: bar}' /api/v1/post-here/
+Host: bar.com
+User-Agent: curl/7.69.1
+Accept: */*
+Origin: https://foo.com
+X-PINGOTHER: pingpong
+Content-Type: application/json;charset=UTF-8
+Cookie: _session=NyV14oKXiS6HHopaf9nT
+```
+
+When a request is made `XMLHttpRequest` and `withCredentials` flag is set, your
+browser will pass down the `Cookie` in the request header.
+
+*Response:*
+```
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Content-Type: application/json
+Access-Control-Allow-Origin: https://foo.com
+Access-Control-Allow-Credentials: true
+Cache-Control: no-cache
+Pragma: no-cache
+Set-Cookie: _session=AjBSqxj4T7bSySNTWeEm; expires=Wed, 31-05-2020 00:00:00 GMT
+```
+
+When your browser notices `Access-Control-Allow-Credentials` set to true. It will
+respect `Set-Cookie` header and sets the cookie.
+
+**Important:** "\*" wildcard should not be set in the `Access-Control-Allow-Origin` like
+mentioned in the [Credentialed requests and wildcards](#user-content-credentialed-requests-and-wildcards) section.
+
 ## Advanced Topics
-
-### Preflighted requests and redirects
-
-#### Access-Control-Allow-Credentials
-
-### Credentialed requests and wildcards
-
-### Third-party cookies
 
 ### Additional HTTP Response Headers
 
 #### Access-Control-Expose-Headers
+
+When a credentials request is made by setting `withCredentials` flag, `Access-Control-Expose-Headers`
+has to be set by server to let browser know which headers can be accessed.
+
+In pre-cors world, by default response headers are not accessible by browser in the CORS request.
+So it is made explicit so that browser will look for this header in order to read exposed headers.
+This way CORS specification makes sure old browsers doesn't break.
+
+#### Access-Control-Allow-Credentials
+
+This is returned in the [pre-flight](#user-content-pre-flight-requests) requests. When your browser
+sees this, it can access `Set-Cookie` header. As we mentioned above, in normal XHR requests, your
+browser won't pass `Cookie` in request header as well as read `Set-Cookie` response header.
+
+**Syntax:**
+
+```
+Access-Control-Allow-Credentials: true
+```
+
+You can find example in the [Request with credentails](#user-content-request-with-credentials) section.
+
+### Credentialed requests and wildcards
+
+Server must specify origin in the value of `Access-Control-Allow-Origin` header,
+instead of specifying the "\*" wildcard. Specifying wildcard would fail the request.
+
+### Preflighted requests and redirects
+
+When a pre-flight request responds with 301/302, some browsers may not support this
+currently. You might get errors like,
+
+`The request was redirected to 'https://example.com/foo', which is disallowed for cross-origin requests that require preflight`
+
+`Request requires preflight, which is disallowed to follow cross-origin redirect`
+
+**Note:** For workarounds check [Preflighted requests and redirects](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) docs by Mozilla.
+
+### Third-party cookies
+
+Browser has to settings to reject all `third-party` cookies, when a user enables that. For example, if a request is
+made from `https://foo.com` and server is at `https://bar.com`, your browser will not set cookies set by bar.com.
+
+### TODO
+
+- Add Screencasts
 
 ## References
 
