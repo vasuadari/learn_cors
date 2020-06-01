@@ -41,9 +41,9 @@ When you open a website by typing Origin Web App, your browser makes Simple HTTP
 As we are voluntarily requesting to serve content from Origin Web App. Your browser will/should serve it without any
 trouble. But, when it comes to XHR requests, JavaScript which is loaded by Origin Web App in your browser can make a
 request to any server(https://netflix.com) requesting for a resource. Now, Origin Web App is owned by Github
-but https://netflix.com is owned by a company named Netflix, that server could pontentially serve anything.
-Github cannot take control of a server which is owned by Netflix. This has lot of security implications pontentially stealing a
-content from one website(it could be a financial website) to any remote server.
+but https://netflix.com is owned by Netflix, that server could pontentially serve anything. Github cannot take control
+of a server which is owned by Netflix. This has lot of security implications pontentially stealing a content from one
+website(it could be a financial website) to any remote server.
 
 Luckily, CORS tackles this problem very well with a given set of rules.
 
@@ -483,8 +483,8 @@ currently. You might get errors like,
 
 ### Third-party cookies
 
-Browser has to settings to reject all `third-party` cookies, when a user enables that. For example, if a request is
-made from `https://foo.com` and server is at `https://bar.com`, your browser will not set cookies set by bar.com.
+Browser has settings to reject all `third-party` cookies, when a user enables that. For example, if a request is
+made from `https://foo.com` and server is at `https://bar.com`, your browser will not set cookies sent by `https://bar.com`.
 
 ## 6. TODO
 
