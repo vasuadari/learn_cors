@@ -131,7 +131,7 @@ Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 
 ### 4.2. Response Headers
 
-The following headers are return in the [pre-flight](#44-preflight-requests) requests.
+The following headers are returned in the [pre-flight](#44-preflight-requests) requests.
 
 #### 4.2.1. Access-Control-Allow-Origin
 
