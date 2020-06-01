@@ -114,7 +114,7 @@ Access-Control-Request-Headers: <header-name>, <header-name>
 Access-Control-Request-Headers: X-PINGOTHER, Content-Type
 ```
 
-**Important:** All the header should be [CORS-safelisted](#414-cors-safelisted) or a customer header like `X-Custom-Header`.
+**Important:** All the header should be [CORS-safelisted](#414-cors-safelisted) or a custom header like `X-Custom-Header`.
 
 #### 4.1.4. CORS-safelisted
 
