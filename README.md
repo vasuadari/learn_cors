@@ -467,8 +467,11 @@ You can find example in the [Request with credentials](#45-request-with-credenti
 
 ### 5.2. Credentialed requests and wildcards
 
-Server must specify origin in the value of `Access-Control-Allow-Origin` header,
-instead of specifying the "\*" wildcard. Specifying wildcard would fail the request.
+When we say credentialed request it means cookies passed in the XHR request or set via the response
+header `Set-Cookie`. When a XHR request is made with withCredentials flag, you're hoping to receive
+response along with cookies to be set. But, you cannot expect `Access-Control-Allow-Origin` to be "\*"
+because that would mean any website can use these cookies. For this reason, your browser would fail
+the request if it sees "\*" in `Access-Control-Allow-Origin` response header.
 
 ### 5.3. Preflighted requests and redirects
 
